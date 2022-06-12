@@ -32,8 +32,7 @@ int main(){
                 break;                            
         }
     }
-    else{       //4번 미만으로 움직일때
-        printf("this");
+    else{       //4번 미만으로 움직일때        
         for (int i=0; i<3; i++){
             if (nidx+2 <= N && midx+1 <= M){
                 nidx+=2;
