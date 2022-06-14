@@ -27,15 +27,15 @@ int main(){
                 minus_idx = i+1;
             }
         }        
-    }
+    }    
     int sub_idx = 0, tmp =0;
     for (auto& i:subexpr){
         sub_idx = 0;
         for (int j=0; j<i.length(); j++){
             if (i[j] == '+' || i[j] == '-'){                                        
                 tmp = stoi(i.substr(sub_idx,j-sub_idx));
-                sub_idx = j+1;
-                if (i == subexpr[0]){
+                sub_idx = j+1;                
+                if (&i == &subexpr[0]){
                     ans += tmp;
                 }
                 else{
