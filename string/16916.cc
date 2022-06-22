@@ -1,20 +1,33 @@
 #include <iostream>     
 #include <string>
+#include <vector>
 using namespace std;
+
+vector<int> makeTable(string pattern){
+    int patternSize = pattern.size();
+    vector<int> table(patternSize,0);
+    int j = 0;
+    for (int i=1; i<patternSize;i++){
+        while(j>0 && pattern[i] != pattern[j])
+            j = table[j-1];
+        if (pattern[i] == pattern[j]){
+            table[i] = ++j;
+        }
+    }
+    return table;
+}
+
 int main(){
-    string s1, s2;
-    cin >> s1 >> s2;
-    if (s2.length() > s1.length()){
+    string s, p;
+    cin >> s >> p;
+    s = p = "abacaaba";
+    if (p.length() > s.length()){
         cout << 0;
         return 0;
     }
-    
-    int* pi = new int[s2.length()];
-    for (int i=0; i<s1.length();){
-        for (int j=0; j<s2.length(); j++){
-            if (s2[j])
-        }
-    }
+    vector<int> pi = makeTable(p);
+    for (int i=0; i<p.length(); i++)
+        cout << pi[i] << ' ';
 
     return 0;
 }
