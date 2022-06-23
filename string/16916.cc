@@ -20,14 +20,14 @@ vector<int> makeTable(string pattern){
 int main(){
     string s, p;
     cin >> s >> p;
-    s = p = "abacaaba";
     if (p.length() > s.length()){
         cout << 0;
         return 0;
     }
     vector<int> pi = makeTable(p);
-    for (int i=0; i<p.length(); i++)
-        cout << pi[i] << ' ';
+    for (int i=0; i<p.length(); i++){
+        
+    }
 
     return 0;
 }
