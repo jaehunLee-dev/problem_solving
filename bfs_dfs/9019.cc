@@ -13,67 +13,53 @@ int main(){
         memset(visited,false,sizeof(visited));        
         int src, dst;
         cin >> src >> dst;
-        queue<pair<int,string>> q;
-        char cmd[4] = {'D','S','L','R'};
-        for (int i=0; i<4; i++){         
-            string s; s=cmd[i];  
-            q.push(make_pair(src,s));    
-        }        
+        queue<pair<int,string>> q;     
+        q.push(make_pair(src,""));
         visited[src] = true;
         while (!q.empty()){
             pair<int,string> tmp = q.front();
-            q.pop();            
-            char mode = tmp.second[tmp.second.length() -1];
-            if (mode == 'D'){       //D할 때
-                int result = tmp.first*2%10000;
-                if (!visited[result]){
-                    visited[result] = true;
-                    if (result == dst){
-                        ans.push_back(tmp.second);
-                        break;
-                    }
-                    for (int i=0; i<4; i++)
-                        q.push(make_pair(result,tmp.second+cmd[i]));
-                }                            
+            q.pop();
+            int result = tmp.first*2%10000;
+            if (result == dst){
+                ans.push_back(tmp.second + "D");
+                break;
             }
-            else if (mode == 'S'){  //S할 때                
-                int result = tmp.first-1;
-                if (result == -1) result = 9999;
-                if (!visited[result]){
-                    visited[result] = true;
-                    if (result == dst){
-                        ans.push_back(tmp.second);
-                        break;
-                    }
-                    for (int i=0; i<4; i++)
-                        q.push(make_pair(result,tmp.second+cmd[i]));
-                }                                
+            if (!visited[result]){
+                visited[result] = true;                
+                q.push(make_pair(result,tmp.second+"D"));
+            }                
+                    
+            result = tmp.first-1;
+            if (result == -1) result = 9999;                
+            if (result == dst){
+                ans.push_back(tmp.second+"S");
+                break;
             }
-            else if (mode == 'L'){  //L할 때
-                int result = tmp.first/1000 + (tmp.first%1000)*10;
-                if (!visited[result]){
-                    visited[result] = true;
-                    if (result == dst){
-                        ans.push_back(tmp.second);
-                        break;
-                    }
-                    for (int i=0; i<4; i++)
-                        q.push(make_pair(result,tmp.second+cmd[i]));
-                }                                
+            if (!visited[result]){
+                visited[result] = true;                
+                q.push(make_pair(result,tmp.second+"S"));
+            }                
+            
+            
+            result = tmp.first/1000 + (tmp.first%1000)*10;                
+            if (result == dst){
+                ans.push_back(tmp.second+"L");
+                break;
             }
-            else if (mode == 'R'){                                   //R할 떄
-                int result = tmp.first%10*1000 + tmp.first/10;
-                if (!visited[result]){
-                    visited[result] = true;
-                    if (result == dst){
-                        ans.push_back(tmp.second);
-                        break;
-                }
-                for (int i=0; i<4; i++)
-                    q.push(make_pair(result,tmp.second+cmd[i]));
-                }                            
+            if (!visited[result]){
+                visited[result] = true;                
+                q.push(make_pair(result,tmp.second+"L"));
+            }       
+                                         
+            result = tmp.first%10*1000 + tmp.first/10;                
+            if (result == dst){
+                ans.push_back(tmp.second+"R");
+                break;
             }
-            else cout << "error!\n";                  
+            if (!visited[result]){
+                visited[result] = true;                
+                q.push(make_pair(result,tmp.second+"R"));
+            }                                    
         } 
     }
     for (auto& i:ans)
