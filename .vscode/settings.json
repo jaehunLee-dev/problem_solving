@@ -9,7 +9,8 @@
         "ostream": "cpp",
         "deque": "cpp",
         "queue": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "cstdlib": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
