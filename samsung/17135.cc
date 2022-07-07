@@ -10,6 +10,11 @@ int main(){
         for (int j=0; j<m; j++)
             cin >> arr_org[i][j];
     }
+
+    int** arr = new int*[n];
+    for (int i=0; i<n; i++)
+        arr[i] = new int[m];
+
     int ans = 0;    
 
     
@@ -18,19 +23,18 @@ int main(){
 
     for (int i=0; i<m; i++){
         for (int j=i+1; j<m; j++){
-            for (int k=j+1; k<m; k++){      //궁수 좌표 : (n,i), (n,j), (n,k) => 시뮬레이션 시작                
-                    int** arr = new int*[n];
-                    for (int i=0; i<n; i++)
-                        arr[i] = new int[m];
-                    for (int i=0; i<n; i++){
-                        for (int j=0; j<m; j++)
-                            arr[i][j] = arr_org[i][j];
-                    }                                
+            for (int k=j+1; k<m; k++){      //궁수 좌표 : (n,i), (n,j), (n,k) => 시뮬레이션 시작                                
+                for (int itr1=0; itr1<n; itr1++){
+                    for (int itr2=0; itr2<m; itr2++)
+                        arr[itr1][itr2] = arr_org[itr1][itr2];
+                }                                
+
                 int tmp_ans = 0;
                 for (int itr = 0; itr<n; itr++){        //적 1턴마다 전진
                     int i_min=d+1, j_min=d+1, k_min=d+1, i_x=m, j_x=m, k_x=m, i_y=n, j_y=n, k_y=n;
                     for (int height = n-1; height>=n-d; height--){
-                        for (int width = 0; width<m; width++){
+                        if (height <0 ) continue;
+                        for (int width = 0; width<m; width++){                            
                             if (arr[height][width] == 1){   //적 발견                                
                                 if (n-height + abs(i-width) <= d){
                                     if (n-height + abs(i-width) == i_min){
@@ -99,10 +103,10 @@ int main(){
                             arr[mv_y][mv_x] = arr[mv_y-1][mv_x];                        
                     }                
                     for (int mv_x = 0; mv_x<m; mv_x++)
-                        arr[0][mv_x] = 0;
-                    if (tmp_ans > ans)
-                        ans = tmp_ans;                    
+                        arr[0][mv_x] = 0;               
                 }                
+                if (tmp_ans > ans)
+                ans = tmp_ans;     
             }
         }
     }
