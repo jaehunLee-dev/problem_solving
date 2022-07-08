@@ -10,7 +10,9 @@
         "deque": "cpp",
         "queue": "cpp",
         "tuple": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "xutility": "cpp",
+        "ios": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
