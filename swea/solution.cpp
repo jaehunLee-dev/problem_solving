@@ -20,7 +20,7 @@ int add(int mId, int mGrade, char mGender[7], int mScore) {
     if (mGender[0] == 'm')
         gen = true;    
     
-    struct tmp{mId,mGrade,gen,mScore};
+    Student tmp{mId,mGrade,gen,mScore};
     v.push_back(tmp);
     int max_score = -1, max_id = 0;
     for (auto& i:v){
@@ -43,7 +43,7 @@ int remove(int mId) {
     int r_grade = 0;
     bool r_gender = false;
     for(auto iter = v.begin(); iter != v.end(); iter++){
-        if (iter->id == id){
+        if (iter->id == mId){
             r_grade = iter->grade;
             r_gender = iter->gender;
             iter = v.erase(iter);
@@ -70,5 +70,39 @@ int remove(int mId) {
 }
 
 int query(int mGradeCnt, int mGrade[], int mGenderCnt, char mGender[][7], int mScore) {
-	return 0;
+    int rtn_score = 300001, rtn_id = 0; 
+    bool exist = false;    
+    for (auto& itr: v){
+        for (int i = 0; i<mGradeCnt; i++){
+            bool in_group = false;
+            if (itr.grade == mGrade[i]){
+                for (int j=0; j<mGenderCnt; j++){
+                    bool tmp_gender = true;
+                    if (mGender[j][0] == 'f')
+                        tmp_gender = false;
+                    if (itr.gender == tmp_gender){
+                        in_group = true;
+                        break;
+                    }
+                }
+                if (in_group)
+                    break;
+            }
+            if (in_group){
+                if (itr.score >= mScore && itr.score < rtn_score){
+                    rtn_score = itr.score;
+                    rtn_id = itr.id;
+                    exist = true;
+                }
+                else if (itr.score >= mScore && itr.score == rtn_score){
+                    if (rtn_id > itr.id){
+                        rtn_id = itr.id;
+                    }                    
+                }
+            }
+        }        
+    }
+    if (!exist)
+	    return 0;
+    return rtn_id;
 }
