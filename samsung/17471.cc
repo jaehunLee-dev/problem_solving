@@ -1,96 +1,101 @@
 #include <iostream>
+#include <vector>
 using namespace std;
-/*
-    a와 b 그래프 구성후, 각 그래프가 가능한지, 즉 dfs로 이어져있는지 확인.
-    => a와 b에 들어갈 노드를 조합을 통해 선택해야한다.
 
-    그 후 sum_a와 sum_b의 차이를 구해서 최솟값을 브루트포스로 계산
-*/
-int n, sum;
-int ans = -1;
-int visited[11];
-int g_size[11];
+vector<vector<int>> graph;
+bool visited[11];       //같은 area인지 판단
+bool dfs_visited[11];   //dfs에서 방문했는지 판단
 int popular[11];
-char area[11];
-
-int dfs(int** graph, int g_len, int idx, int num);
-void comb(int** graph, int len){
-    if (len == n+1){        //조합 완성
-        int idx_a = -1, idx_b = -1;
-        int num_a = 0, num_b = 0;
-        for (int i=1; i<len; i++){
-            if (area[i] == 'a'){
-                num_a++;          
-                if (idx_a == -1)
-                    idx_a = i;
-            }
-            else {
-                num_b++;
-                if (idx_b == -1)
-                    idx_b = i;
-            }
-        }        
-        if (idx_a == -1 || idx_b == -1)
-            return;                     //모든 지역의 구역이 같으면 return
-
-        /*      본 조합으로 dfs 시작
-        for (int i=1; i<len; i++)
-            cout << area[i];
-        cout << '\n';        
-        */
-        sum = popular[idx_a];
-        int sum_a = dfs(graph,g_size[idx_a],idx_a,num_a);      //a,b에 대해 각각 dfs 수행
-        sum = popular[idx_b];
-        int sum_b = dfs(graph,g_size[idx_b],idx_b,num_b);
-        if (sum_a != -1 && sum_b != -1){
-            int sub = abs(sum_a - sum_b);
-            if (ans == -1 || sub<ans){
-                ans = sub;
-                cout << sum_a << ' ' << sum_b << '\n';
-            }
+int sum;
+int area_sum;
+int num;
+int ans = 10000;
+bool area;  
+int dfs(int node, int total){    
+    if (num == total){      //전체 발견 완료
+        return area_sum;
+    }
+    for(auto& i:graph[node]){
+        if (!dfs_visited[i] && visited[i] == area){     //인접 노드 중 아직 방문하지 않았고, 같은 area인 경우 dfs            
+            num++;
+            dfs_visited[i] = true;
+            area_sum += popular[i];
+            dfs(i,total);
         }
+    }
+    if (num != total){
+        return -1;
+    }
+    else return area_sum;
+}
+
+void comb(int n,int r, int idx, int total){    //조합 (1개~n/2개 뽑기) , nCr
+    if (r == 0){        //다 뽑음 (total개 만큼 뽑음)
+        bool area1 = false, area2 = false;
+        int sum1 = 0 , sum2 = 0;
+        for (int i=1; i<=n; i++){
+            if (area1 && area2) break;  
+            if (!area1 && visited[i]){  //true/false의 각 처음 노드로 dfs 수행
+                area = true;
+                dfs_visited[i] = true;
+                num = 0, area_sum = 0;
+                if (dfs(i,total) != -1){
+                    sum1 = area_sum;
+                }
+                dfs_visited[i] = false;
+                area1 = true;
+            }                
+            else if (!area2 && !visited[i]){
+                area = false;
+                dfs_visited[i] = true;
+                num = 0, area_sum = 0;
+                if (dfs(i,n-total) != -1){
+                    sum2 = area_sum;
+                }
+                dfs_visited[i] = false;
+                area2 = true;
+            }
+        }     
+        if (abs(sum1-sum2) < ans)
+            ans = abs(sum1-sum2);           
         return;
     }
-    area[len] = 'a';    
-    comb(graph,len+1);
-    area[len] = 'b';
-    comb(graph,len+1);    
-}
-
-int dfs(int** graph, int g_len, int idx, int num){      //불가하면 -1, 그 외에는 dfs 탐색 노드들의 합
-    if (num == 0){                  //num == 0 => dfs 성공
-        return sum;
+    else if (idx == n+1)
+        return;
+    else{
+        visited[idx] = true;
+        comb(n,r-1,idx+1,total);
+        visited[idx] = false;
+        comb(n,r,idx+1,total);
     }
-    //실패: 노드에서 이미 주변 노드를 모두 방문했을때 => -1 return. 모두 방문하기 전에 sum값 리턴받음 => 성공, sum 그대로 return
-    for (int i=0; i<g_len; i++){
-        int node = graph[idx][i];
-        if (area[node] == area[idx] && !visited[node]){     //같은 색, 아직 방문 안한 노드
-            visited[node] = true;
-            sum+=popular[node];
-            if (dfs(graph,g_size[node],node,num-1) != -1)
-                return sum;
-            visited[node] = false;
-            sum-=popular[node];
-        }
-    }
-    return -1;
 }
-
 int main(){
     ios::sync_with_stdio(false);
     cin.tie(NULL); cout.tie(NULL);
-    cin >> n;    
-    for (int i=1; i<n+1; i++)
+    int N; cin >> N;
+    
+    for (int i=1; i<=N; i++){
         cin >> popular[i];
-    int** graph = new int*[n+1];
-    for (int i=1; i<n+1; i++){
-        cin >> g_size[i];
-        graph[i] = new int[g_size[i]];
-        for (int j=0; j<g_size[i]; j++){
-            cin >> graph[i][j];            
+        sum += popular[i];
+    }    
+    int tmp;    
+    vector<int> _tmp;
+    graph.push_back(_tmp);
+    for (int i=1; i<=N; i++){
+        vector<int> tmp_v;
+        int itr;
+        cin >> itr;
+        for (int j=0; j<itr; j++){
+            cin >> tmp;
+            tmp_v.push_back(tmp);
         }
+        graph.push_back(tmp_v);
     }
-    comb(graph,1);    
+    for (int i=1; i<=N/2; i++){
+        comb(N,i,1,i);
+    }
+    if (ans == 10000)
+        ans = -1;
     cout << ans;
-    return 0;    
+    return 0;
 }
