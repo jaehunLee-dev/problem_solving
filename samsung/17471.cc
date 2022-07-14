@@ -11,22 +11,17 @@ int area_sum;
 int num;
 int ans = 10000;
 bool area;  
-int dfs(int node, int total){    
-    if (num == total){      //전체 발견 완료
-        return area_sum;
-    }
+void dfs(int node){    
     for(auto& i:graph[node]){
-        if (!dfs_visited[i] && visited[i] == area){     //인접 노드 중 아직 방문하지 않았고, 같은 area인 경우 dfs            
+        if (!dfs_visited[i] && (visited[i] == area)){     //인접 노드 중 아직 방문하지 않았고, 같은 area인 경우 dfs                                    
             num++;
-            dfs_visited[i] = true;
+            dfs_visited[i] = true;        
             area_sum += popular[i];
-            dfs(i,total);
+            //cout << "area_sum: " << area_sum << '\n';
+            dfs(i);            
         }
-    }
-    if (num != total){
-        return -1;
-    }
-    else return area_sum;
+    }  
+    return;  
 }
 
 void comb(int n,int r, int idx, int total){    //조합 (1개~n/2개 뽑기) , nCr
@@ -38,25 +33,31 @@ void comb(int n,int r, int idx, int total){    //조합 (1개~n/2개 뽑기) , n
             if (!area1 && visited[i]){  //true/false의 각 처음 노드로 dfs 수행
                 area = true;
                 dfs_visited[i] = true;
-                num = 0, area_sum = 0;
-                if (dfs(i,total) != -1){
+                num = 1, area_sum = popular[i];
+                dfs(i);
+                //cout << "area_sum: " << area_sum << '\n';
+                if (num == total){      //dfs 성공
                     sum1 = area_sum;
                 }
-                dfs_visited[i] = false;
+                for (int j=1; j<=n; j++)                                
+                    dfs_visited[j] = false;
                 area1 = true;
             }                
             else if (!area2 && !visited[i]){
                 area = false;
                 dfs_visited[i] = true;
-                num = 0, area_sum = 0;
-                if (dfs(i,n-total) != -1){
+                num = 1, area_sum = popular[i];
+                dfs(i);
+                if (num == n-total){
                     sum2 = area_sum;
-                }
-                dfs_visited[i] = false;
+                }                    
+                for (int j=1; j<=n; j++)
+                    dfs_visited[j] = false;
                 area2 = true;
             }
         }     
-        if (abs(sum1-sum2) < ans)
+        //cout << "sum1: " << sum1 << ", sum2: " << sum2 << '\n';
+        if (sum1 !=0 && sum2 != 0 && abs(sum1-sum2) < ans)
             ans = abs(sum1-sum2);           
         return;
     }
