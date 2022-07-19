@@ -8,7 +8,7 @@ int main(){
         int s_m, s_c, s_i;
         cin >> s_m >> s_c >> s_i;
         string cmd;
-        cin >> cmd;
+        cin >> cmd; 
     }
     return 0;
 }
