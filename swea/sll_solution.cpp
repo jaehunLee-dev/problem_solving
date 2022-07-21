@@ -1,0 +1,72 @@
+#define MAX_NODE 10000
+struct Node {
+	int data;
+	Node* next;
+};
+
+Node node[MAX_NODE];
+int nodeCnt;
+Node* head;
+
+Node* getNode(int data) {
+	node[nodeCnt].data = data;
+	node[nodeCnt].next = nullptr;
+	return &node[nodeCnt++];
+}
+
+void init()
+{	
+	head = getNode(0);		
+}
+
+void addNode2Head(int data)
+{
+	Node* new_node = getNode(data);	
+	new_node->next = head->next;
+	head->next = new_node;		
+}
+
+void addNode2Tail(int data)
+{
+	Node* end_node = head;
+	while (end_node->next != nullptr)
+		end_node = end_node->next;
+	Node* new_node = getNode(data);
+	end_node->next = new_node;	
+}
+
+void addNode2Num(int data, int num)
+{
+	Node* new_node = getNode(data);
+	Node* node_ptr = head;
+	for (int i = 0; i < num - 1; i++) {
+		if (node_ptr->next == nullptr)
+			break;
+		node_ptr = node_ptr->next;
+	}
+	new_node->next = node_ptr->next;
+	node_ptr->next = new_node;	
+}
+
+void removeNode(int data)
+{	
+	Node* node_ptr = head;
+	while (node_ptr->next != nullptr && node_ptr->next->data != data)
+		node_ptr = node_ptr->next;
+
+	if (node_ptr->next != nullptr) {
+		node_ptr->next = node_ptr->next->next;
+	}	
+}
+
+int getList(int output[MAX_NODE])
+{
+	int idx = 0;
+	Node* node_ptr = head;
+	while (node_ptr->next != nullptr) {
+		output[idx++] = node_ptr->next->data;
+		node_ptr = node_ptr->next;
+		//printf("idx:%d\n",idx-1);
+	}	
+	return idx;
+}

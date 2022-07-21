@@ -17,18 +17,19 @@ int main(int argc, char** argv)
         string s;
         cin >> s;
         len = s.length();
-        long long ans = 0;
-        for (long long i=1; i<(1<<(4*len)); i++){     //0000....001 ~ 1111....111
-            long long now = i;
-            long long prv = 1; //처음 열쇠 : A (0001)
+        int ans = 0;
+        for (int i=1; i<(1<<(4*len)); i++){     //0000....001 ~ 1111....111
+            int now = i;
+            int prv = 1; //처음 열쇠 : A (0001)
             bool fail = false;            
             for (int j=0; j<len; j++){
-                long long tmp = (now & 15);   //16으로 나눈 나머지 (현재 수열)                
+                //cout << "again\n";
+                int tmp = (now & 15);   //16으로 나눈 나머지 (현재 수열)                
                 if (!tmp){       //0000인 경우 -> 적어도 한명은 참여해야해서 break
                     fail = true;                    
                     break;
                 }
-                long long mv = 1 << (s[j] - 'A'); //A: 0001, B: 0010, C: 0100, D: 1000                
+                int mv = 1 << (s[j] - 'A'); //A: 0001, B: 0010, C: 0100, D: 1000                
                 if (!(tmp & mv)){      //현재 책임자 포함 안돼서 break
                     fail = true;
                     break;         
@@ -40,13 +41,15 @@ int main(int argc, char** argv)
                 now = now >> 4;     //16으로 나누기
                 prv = tmp;  //현재 수열 prv(이전 수열)로 설정                
             }            
-            if (!fail)                
+            if (!fail){
                 ans++;            
+                cout << "ans increased\n";
+            }
 
             if (ans == 1000000007)
                 ans = 0;
         }
-        cout << '#' << test_case << ' ' << ans << '\n';
+        cout << '#' << test_case << ' ' << ans << '\n';        
 	}    
 	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
