@@ -43,10 +43,10 @@ int num_isl(){
 
 void calc_dist(){
     for (int i=0; i<N; i++){
-        for (int j=0; j<M; j++){
+        for (int j=0; j<M; j++){            
             if (map[i][j] != 0){
                 int start_isl = map[i][j];
-                for (int k=0; i<4; k++){
+                for (int k=0; k<4; k++){
                     int ny = i+dy[k];
                     int nx = j+dx[k];
                     if (ny == N || nx == M || ny == -1 || nx == -1)
@@ -90,6 +90,12 @@ int main(){
             cin >> map[i][j];
     }        
     int island_num = num_isl();
+    cout << island_num << '\n';
+    for (int i=0; i<N; i++){
+        for (int j=0; j<M; j++)
+            cout << map[i][j] << ' ';
+        cout << '\n';
+    }
     graph = new int*[island_num+1];     //graph[i][j] : i섬에서 j섬까지의 거리
     for (int i=0; i<island_num+1; i++)
         graph[i] = new int[island_num+1];
