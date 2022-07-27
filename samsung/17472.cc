@@ -44,17 +44,17 @@ int num_isl(){
 void calc_dist(){
     for (int i=0; i<N; i++){
         for (int j=0; j<M; j++){            
-            if (map[i][j] != 0){
+            if (map[i][j] != 0){                
                 int start_isl = map[i][j];
                 for (int k=0; k<4; k++){
                     int ny = i+dy[k];
                     int nx = j+dx[k];
                     if (ny == N || nx == M || ny == -1 || nx == -1)
-                        continue;
+                        continue;                    
                     if (map[ny][nx] == 0){      //바다
                         int dist = 0; 
                         bool out_range = false;                       
-                        while (map[ny][nx] != 0){       //땅 만날 때까지 같은 방향으로 이동
+                        while (map[ny][nx] == 0){       //땅 만날 때까지 같은 방향으로 이동
                             ny = ny+dy[k];
                             nx = nx+dx[k];
                             dist++;
@@ -62,7 +62,7 @@ void calc_dist(){
                                 out_range = true;
                                 break;
                             }                        
-                        }
+                        }                        
                         if (out_range || dist<2)  continue; //최소 거리 2 또는 땅 발견 못함
                         if (map[ny][nx] != start_isl){      //다른 섬 도착
                             int dst_isl = map[ny][nx];
@@ -89,13 +89,7 @@ int main(){
         for (int j=0; j<M; j++)
             cin >> map[i][j];
     }        
-    int island_num = num_isl();
-    cout << island_num << '\n';
-    for (int i=0; i<N; i++){
-        for (int j=0; j<M; j++)
-            cout << map[i][j] << ' ';
-        cout << '\n';
-    }
+    int island_num = num_isl();    
     graph = new int*[island_num+1];     //graph[i][j] : i섬에서 j섬까지의 거리
     for (int i=0; i<island_num+1; i++)
         graph[i] = new int[island_num+1];
@@ -103,12 +97,7 @@ int main(){
         for (int j=0; j<island_num+1; j++)
             graph[i][j] = -1;
     }                
-    calc_dist();
-    for (int i=1; i<=island_num; i++){
-        for (int j=1; j<=island_num; j++)
-            cout << graph[i][j] << ' ';
-        cout << '\n';
-    }  
+    calc_dist();    
     bool* isl_visited = new bool[island_num+1]();
     //1번 섬부터 출발, prim 알고리즘
     isl_visited[1] = true;
@@ -117,8 +106,7 @@ int main(){
         int isl_ver = -1;
         int from = -1;
         for (int j=1; j<=island_num; j++){
-            if (isl_visited[j]){        //이미 방문한 섬에서 가장 짧은 edge 선택
-                cout << "possible: " << j << '\n';
+            if (isl_visited[j]){        //이미 방문한 섬에서 가장 짧은 edge 선택                
                 for (int k=1; k<=island_num; k++){
                     if (!isl_visited[k] && graph[j][k] != -1 && graph[j][k] < min_dis){      //아직 방문안한 섬, 연결되있고, 가장짧은 edge
                         min_dis = graph[j][k];
@@ -129,13 +117,19 @@ int main(){
             }
         }
         isl_visited[isl_ver] = true;
-        cout << from << " connect to " << isl_ver << ",length: "<< min_dis << '\n';
-        ans+=min_dis;
+        if (min_dis == 10){
+            ans = -1;
+            break;
+        }
+        //cout << from << " connect to " << isl_ver << ",length: "<< min_dis << '\n';
+        ans+=min_dis;        
     }
     cout << ans;
     return 0;
 }
 
 /*
-섬이 무조건 직사각형이 아니기떄문에 거리계산 다시해야함.
+1. 섬의 번호 메기기
+2. 섬의 거리 계산 (모든 육지->바다에서 한 방향으로만 가서)
+3. prim 알고리즘
 */
