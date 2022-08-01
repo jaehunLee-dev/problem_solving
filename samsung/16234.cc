@@ -20,7 +20,11 @@ int main(){
             cin >> A[i][j];        
     }
     queue<pair<int,int>> q;
-    while(++ans){    
+    while(++ans){  
+        for (int i=0; i<N; i++)  {
+            for (int j=0; j<N; j++)
+                visited[i][j] = false;
+        }
         bool end = true;;
         for (int i=0; i<N; i++){
             for (int j=0; j<N; j++){
