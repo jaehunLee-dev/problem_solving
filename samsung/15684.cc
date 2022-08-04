@@ -23,12 +23,7 @@ void comb(int sero, int garo, int idx){    //1. 가로로 확장 2. 세로로 �
         cout << ans;
         exit(0);
     }
-    if (idx > 3)    //정답은 3보다 작아야한다.
-        return;
-    if (garo >= N){
-        garo = 1;
-        sero +=1;
-    }
+    
     if (idx >= ans) return;
     if (do_ladder()){
         if (idx < ans){            
@@ -36,6 +31,12 @@ void comb(int sero, int garo, int idx){    //1. 가로로 확장 2. 세로로 �
             return; //이미 사다리 완성이면 return
         }
     }    
+    if (idx >= 3)    //정답은 3보다 작아야한다.
+        return;
+    if (garo >= N){
+        garo = 1;
+        sero +=1;
+    }
     //if (idx >= ans) return;
     if (garo > N || sero > H) return;
 
